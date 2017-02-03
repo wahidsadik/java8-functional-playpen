@@ -1,9 +1,15 @@
 package com.wahidsadik.java8.functional.ternary;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class TernaryDriverTest {
+	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+	
 	@Test
 	public void testTrue() {
 		String value = "ABC";
@@ -12,9 +18,7 @@ public class TernaryDriverTest {
 			.whenTrue(() -> value)
 			.whenFalse(() -> "DEF");
 
-		Object result = underTest.apply();
-
-		Assert.assertEquals(value, result);
+		Assert.assertEquals(value, underTest.apply());
 	}
 
 	@Test
@@ -25,9 +29,19 @@ public class TernaryDriverTest {
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> value);
 
-		Object result = underTest.apply();
+		Assert.assertEquals(value, underTest.apply());
+	}
 
-		Assert.assertEquals(value, result);
+	@Test
+	public void driverIsReusable() {
+		String value = "DEF";
+
+		TernaryDriver<String> underTest = TernaryDriver.<String> test(() -> false)
+			.whenTrue(() -> "ABC")
+			.whenFalse(() -> value);
+
+		Assert.assertEquals(value, underTest.apply());
+		Assert.assertEquals(value, underTest.apply());
 	}
 
 	@Test
@@ -39,9 +53,18 @@ public class TernaryDriverTest {
 			.whenTrue(() -> new int[] { 1, 2, 3 })
 			.whenFalse(() -> new int[] { 4, 5 });
 
-		Object result = underTest.apply();
-
-		Assert.assertEquals(value, result);
+		Assert.assertEquals(value, underTest.apply());
 	}
+
+	@Test
+	public void cannotReassignConstructorParameters() {
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("trueSupplier has already been set");
+		
+		TernaryDriver.<String> test(() -> false)
+			.whenTrue(() -> "ABC")
+			.whenTrue(() -> "ABC");
+	}
+
 
 }
