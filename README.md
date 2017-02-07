@@ -12,7 +12,7 @@ This is to scratch an itch I had. With Java, I can do this:
 
 Only one expression is allowed for each of those. There is no way to in-line more than one lines of code. I will have to extract that as method and to do that. Sometimes I don't want to do that.
 
-So here my attempt:
+So here is my attempt:
 
 	TernaryDriver<String> underTest = TernaryDriver.<String> test(() -> "ABC".length() == 1)
 		.whenTrue(() -> {
@@ -23,6 +23,8 @@ So here my attempt:
 			// lots of code
 			return "Goodbye World!"
 		});
+	
+	String result = underTest.apply()
 
 Itch scratched.
 
