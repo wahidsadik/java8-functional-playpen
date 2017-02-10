@@ -14,34 +14,34 @@ public class TernaryDriverTest {
 	public void testTrue() {
 		String value = "ABC";
 
-		TernaryDriver<String> underTest = TernaryDriver.<String> test(() -> true)
+		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> value)
 			.whenFalse(() -> "DEF");
 
-		Assert.assertEquals(value, underTest.apply());
+		Assert.assertEquals(value, underTest.apply(() -> true));
 	}
 
 	@Test
 	public void testFalse() {
 		String value = "DEF";
 
-		TernaryDriver<String> underTest = TernaryDriver.<String> test(() -> false)
+		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> value);
 
-		Assert.assertEquals(value, underTest.apply());
+		Assert.assertEquals(value, underTest.apply(() -> false));
 	}
 
 	@Test
 	public void driverIsReusable() {
 		String value = "DEF";
 
-		TernaryDriver<String> underTest = TernaryDriver.<String> test(() -> false)
+		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> value);
 
-		Assert.assertEquals(value, underTest.apply());
-		Assert.assertEquals(value, underTest.apply());
+		Assert.assertEquals(value, underTest.apply(() -> false));
+		Assert.assertEquals(value, underTest.apply(() -> false));
 	}
 
 	@Test
@@ -49,11 +49,11 @@ public class TernaryDriverTest {
 
 		int[] value = { 4, 5 };
 
-		TernaryDriver<int[]> underTest = TernaryDriver.<int[]> test(() -> false)
+		TernaryDriver<int[]> underTest = TernaryDriver.<int[]> of()
 			.whenTrue(() -> new int[] { 1, 2, 3 })
 			.whenFalse(() -> new int[] { 4, 5 });
 
-		Assert.assertEquals(value, underTest.apply());
+		Assert.assertArrayEquals(value, underTest.apply(() -> false));
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class TernaryDriverTest {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("trueSupplier has already been set");
 		
-		TernaryDriver.<String> test(() -> false)
+		TernaryDriver.<String> of()
 			.whenTrue(() -> "ABC")
 			.whenTrue(() -> "ABC");
 	}

@@ -11,18 +11,16 @@ import java.util.function.Supplier;
  * @param <T>
  */
 public class TernaryDriver<T> {
-	private final BooleanSupplier booleanSupplier;
 	private Optional<Supplier<T>> trueSupplier;
 	private Optional<Supplier<T>> falseSupplier;
-
-	private TernaryDriver(BooleanSupplier booleanSupplier) {
-		this.booleanSupplier = booleanSupplier;
+	
+	private TernaryDriver() {
 		this.trueSupplier = Optional.empty();
 		this.falseSupplier = Optional.empty();
 	}
 
-	public static <U> TernaryDriver<U> test(BooleanSupplier booleanSupplier) {
-		return new TernaryDriver<U>(booleanSupplier);
+	public static <U> TernaryDriver<U> of() {
+		return new TernaryDriver<U>();
 	}
 
 	public TernaryDriver<T> whenTrue(Supplier<T> trueSupplier) {
@@ -43,7 +41,7 @@ public class TernaryDriver<T> {
 		return this;
 	}
 
-	public T apply() {
+	public T apply(BooleanSupplier booleanSupplier) {
 		boolean result = booleanSupplier.getAsBoolean();
 		return result ? trueSupplier.get().get() : falseSupplier.get().get();
 	}
