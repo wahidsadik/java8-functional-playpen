@@ -3,7 +3,8 @@
 
 
 # Eclipse
-/bin/
+bin/
 .classpath
 .project
 .settings
+build/

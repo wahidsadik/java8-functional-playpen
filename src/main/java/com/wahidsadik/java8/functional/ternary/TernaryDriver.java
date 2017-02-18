@@ -1,7 +1,6 @@
 package com.wahidsadik.java8.functional.ternary;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -11,39 +10,56 @@ import java.util.function.Supplier;
  * @param <T>
  */
 public class TernaryDriver<T> {
-	private Optional<Supplier<T>> trueSupplier;
-	private Optional<Supplier<T>> falseSupplier;
+	private final Supplier<T> trueSupplier;
+	private final Supplier<T> falseSupplier;
 	
-	private TernaryDriver() {
-		this.trueSupplier = Optional.empty();
-		this.falseSupplier = Optional.empty();
+	public static <TS> Builder<TS> of() {
+		return new Builder<TS>();
 	}
 
-	public static <U> TernaryDriver<U> of() {
-		return new TernaryDriver<U>();
+	private TernaryDriver(Supplier<T> trueSupplier, Supplier<T> falseSupplier) {
+		this.trueSupplier = trueSupplier;
+		this.falseSupplier = falseSupplier;
 	}
 
-	public TernaryDriver<T> whenTrue(Supplier<T> trueSupplier) {
-		if (this.trueSupplier.isPresent()) {
-			throw new IllegalArgumentException("trueSupplier has already been set");
-		} else {
-			this.trueSupplier = Optional.of(trueSupplier);
+	public T apply(Supplier<Boolean> booleanSupplier) {
+		boolean result = booleanSupplier.get();
+		return result ? trueSupplier.get() : falseSupplier.get();
+	}
+	
+	public static class Builder<T> {
+		private Optional<Supplier<T>> trueSupplier = Optional.empty();
+		private Optional<Supplier<T>> falseSupplier = Optional.empty();
+		
+		private Builder() {}
+	
+		public Builder<T> whenTrue(Supplier<T> trueSupplier) {
+			if (this.trueSupplier.isPresent()) {
+				throw new IllegalStateException("trueSupplier has already been set");
+			} else {
+				this.trueSupplier = Optional.of(trueSupplier);
+			}
+			return this;
 		}
-		return this;
-	}
 
-	public TernaryDriver<T> whenFalse(Supplier<T> falseSupplier) {
-		if (this.falseSupplier.isPresent()) {
-			throw new IllegalArgumentException("falseSupplier has already been set");
-		} else {
-			this.falseSupplier = Optional.of(falseSupplier);
+		public Builder<T> whenFalse(Supplier<T> falseSupplier) {
+			if (this.falseSupplier.isPresent()) {
+				throw new IllegalStateException("falseSupplier has already been set");
+			} else {
+				this.falseSupplier = Optional.of(falseSupplier);
+			}
+			return this;
 		}
-		return this;
-	}
+		
+		public TernaryDriver<T> build() {
+			if (!trueSupplier.isPresent()
+					|| !falseSupplier.isPresent()) {
+				throw new IllegalStateException("Not all parameters have been provided");
+			} else {
+				return new TernaryDriver<>(trueSupplier.get(), falseSupplier.get());
+			}
+		}
 
-	public T apply(BooleanSupplier booleanSupplier) {
-		boolean result = booleanSupplier.getAsBoolean();
-		return result ? trueSupplier.get().get() : falseSupplier.get().get();
 	}
 
 }

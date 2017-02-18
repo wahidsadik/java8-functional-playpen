@@ -22,8 +22,32 @@ So here is my attempt:
 		.whenFalse(() -> {
 			// lots of code
 			return "Goodbye World!"
-		});
+		})
+		.build();
 
-	String response = underTest.apply(() -> "ABC".length() == 1);
+	String response = underTest.apply(() -> "ABC".length() == 1); // response == "Goodbye World!"
 
 Itch scratched. This also makes the code block reusable.
+
+## SwitchDriver
+
+Functional way of creating `switch`. 
+
+Example:
+
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+			.defaultClause(word -> word.length())
+			.addCase(word -> word.equals("BCD"), word -> word.length() + 10)
+			.addCase(word -> word.equals("CDE"), word -> word.length() + 100)
+			.build();
+		
+		//Use a supplier to pass a value to SwitchDriver
+		underTest.apply(() -> "ABC").intValue();//returns 3
+		
+		//Or, use a direct value to SwitchDriver
+		underTest.apply("ABC").intValue();//returns 3
+
+## IfDriver
+
+Coming up!
+

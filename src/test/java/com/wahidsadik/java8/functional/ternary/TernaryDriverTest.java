@@ -9,6 +9,46 @@ public class TernaryDriverTest {
 	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
+
+	@Test
+	public void cannotReassignTrueSupplier() {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("trueSupplier has already been set");
+		
+		TernaryDriver.<String> of()
+			.whenTrue(() -> "ABC")
+			.whenTrue(() -> "ABC");
+	}
+
+	@Test
+	public void cannotReassignFalseSupplier() {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("falseSupplier has already been set");
+		
+		TernaryDriver.<String> of()
+			.whenFalse(() -> "ABC")
+			.whenFalse(() -> "ABC");
+	}
+
+	@Test
+	public void mustProvideTrueSupplier() {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Not all parameters have been provided");
+		
+		TernaryDriver.<String> of()
+			.whenFalse(() -> "ABC")
+			.build();
+	}
+	
+	@Test
+	public void mustProvideFalseSupplier() {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Not all parameters have been provided");
+		
+		TernaryDriver.<String> of()
+			.whenTrue(() -> "ABC")
+			.build();
+	}
 	
 	@Test
 	public void testTrue() {
@@ -16,7 +56,8 @@ public class TernaryDriverTest {
 
 		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> value)
-			.whenFalse(() -> "DEF");
+			.whenFalse(() -> "DEF")
+			.build();
 
 		Assert.assertEquals(value, underTest.apply(() -> true));
 	}
@@ -27,7 +68,8 @@ public class TernaryDriverTest {
 
 		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> "ABC")
-			.whenFalse(() -> value);
+			.whenFalse(() -> value)
+			.build();
 
 		Assert.assertEquals(value, underTest.apply(() -> false));
 	}
@@ -38,7 +80,8 @@ public class TernaryDriverTest {
 
 		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> "ABC")
-			.whenFalse(() -> value);
+			.whenFalse(() -> value)
+			.build();
 
 		Assert.assertEquals(value, underTest.apply(() -> false));
 		Assert.assertEquals(value, underTest.apply(() -> false));
@@ -51,20 +94,38 @@ public class TernaryDriverTest {
 
 		TernaryDriver<int[]> underTest = TernaryDriver.<int[]> of()
 			.whenTrue(() -> new int[] { 1, 2, 3 })
-			.whenFalse(() -> new int[] { 4, 5 });
+			.whenFalse(() -> new int[] { 4, 5 })
+			.build();
 
 		Assert.assertArrayEquals(value, underTest.apply(() -> false));
 	}
 
 	@Test
-	public void cannotReassignConstructorParameters() {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("trueSupplier has already been set");
+	public void throwsExceptionFromWhenClause() {
+		thrown.expect(RuntimeException.class);
 		
-		TernaryDriver.<String> of()
+		TernaryDriver<String> underTest = TernaryDriver.<String> of()
 			.whenTrue(() -> "ABC")
-			.whenTrue(() -> "ABC");
+			.whenFalse(() -> {
+				throw new RuntimeException();
+			})
+			.build();
+		
+		underTest.apply(() -> false);
 	}
-
+	
+	@Test
+	public void throwsExceptionFromApplyClause() {
+		thrown.expect(RuntimeException.class);
+		
+		TernaryDriver<String> underTest = TernaryDriver.<String> of()
+			.whenTrue(() -> "ABC")
+			.whenFalse(() -> "DEF")
+			.build();
+		
+		underTest.apply(() -> {
+			throw new RuntimeException();
+		});
+	}
 
 }
