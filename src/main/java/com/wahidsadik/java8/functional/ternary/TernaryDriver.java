@@ -4,16 +4,36 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
+ * A functional way of creating ternary comparison.
+ * 
+ * Sample code:
+ * 
+ * <pre>
+ * 	TernaryDriver<String> underTest = TernaryDriver.<String> builder()
+ *		.whenTrue(() -> {
+ *			// lots of code
+ *			return "Hello World!"
+ *		})
+ *		.whenFalse(() -> {
+ *			// lots of code
+ *			return "Goodbye World!"
+ *		})
+ *		.build();
+ *
+ *	String response = underTest.apply(() -> "ABC".length() == 1); // response == "Goodbye World!"
+ * </pre>
+ * 
  * 
  * @author wsadik
+ * @version 1.0.0
  *
- * @param <T>
+ * @param <T> Type parameter of the return type when the driver is used.
  */
 public class TernaryDriver<T> {
 	private final Supplier<T> trueSupplier;
 	private final Supplier<T> falseSupplier;
 	
-	public static <TS> Builder<TS> of() {
+	public static <TS> Builder<TS> builder() {
 		return new Builder<TS>();
 	}
 

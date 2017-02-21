@@ -15,7 +15,7 @@ public class TernaryDriverTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("trueSupplier has already been set");
 		
-		TernaryDriver.<String> of()
+		TernaryDriver.<String> builder()
 			.whenTrue(() -> "ABC")
 			.whenTrue(() -> "ABC");
 	}
@@ -25,7 +25,7 @@ public class TernaryDriverTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("falseSupplier has already been set");
 		
-		TernaryDriver.<String> of()
+		TernaryDriver.<String> builder()
 			.whenFalse(() -> "ABC")
 			.whenFalse(() -> "ABC");
 	}
@@ -35,7 +35,7 @@ public class TernaryDriverTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Not all parameters have been provided");
 		
-		TernaryDriver.<String> of()
+		TernaryDriver.<String> builder()
 			.whenFalse(() -> "ABC")
 			.build();
 	}
@@ -45,7 +45,7 @@ public class TernaryDriverTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Not all parameters have been provided");
 		
-		TernaryDriver.<String> of()
+		TernaryDriver.<String> builder()
 			.whenTrue(() -> "ABC")
 			.build();
 	}
@@ -54,7 +54,7 @@ public class TernaryDriverTest {
 	public void testTrue() {
 		String value = "ABC";
 
-		TernaryDriver<String> underTest = TernaryDriver.<String> of()
+		TernaryDriver<String> underTest = TernaryDriver.<String> builder()
 			.whenTrue(() -> value)
 			.whenFalse(() -> "DEF")
 			.build();
@@ -66,7 +66,7 @@ public class TernaryDriverTest {
 	public void testFalse() {
 		String value = "DEF";
 
-		TernaryDriver<String> underTest = TernaryDriver.<String> of()
+		TernaryDriver<String> underTest = TernaryDriver.<String> builder()
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> value)
 			.build();
@@ -78,7 +78,7 @@ public class TernaryDriverTest {
 	public void driverIsReusable() {
 		String value = "DEF";
 
-		TernaryDriver<String> underTest = TernaryDriver.<String> of()
+		TernaryDriver<String> underTest = TernaryDriver.<String> builder()
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> value)
 			.build();
@@ -92,7 +92,7 @@ public class TernaryDriverTest {
 
 		int[] value = { 4, 5 };
 
-		TernaryDriver<int[]> underTest = TernaryDriver.<int[]> of()
+		TernaryDriver<int[]> underTest = TernaryDriver.<int[]> builder()
 			.whenTrue(() -> new int[] { 1, 2, 3 })
 			.whenFalse(() -> new int[] { 4, 5 })
 			.build();
@@ -104,7 +104,7 @@ public class TernaryDriverTest {
 	public void throwsExceptionFromWhenClause() {
 		thrown.expect(RuntimeException.class);
 		
-		TernaryDriver<String> underTest = TernaryDriver.<String> of()
+		TernaryDriver<String> underTest = TernaryDriver.<String> builder()
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> {
 				throw new RuntimeException();
@@ -118,7 +118,7 @@ public class TernaryDriverTest {
 	public void throwsExceptionFromApplyClause() {
 		thrown.expect(RuntimeException.class);
 		
-		TernaryDriver<String> underTest = TernaryDriver.<String> of()
+		TernaryDriver<String> underTest = TernaryDriver.<String> builder()
 			.whenTrue(() -> "ABC")
 			.whenFalse(() -> "DEF")
 			.build();

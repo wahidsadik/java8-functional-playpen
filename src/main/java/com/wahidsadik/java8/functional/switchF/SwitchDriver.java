@@ -8,19 +8,33 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * This class can be used as switch. Though, it won't give you the same performance.
- * 
- * One issue with multilevel if approach is this: it forces use the same object type to pass thru the predicate. We need any kind of predicate.
+ * Functional way of creating `switch`. All the levels must return the same output. Each level is guarded by a predicate.
+ *
+ * Example:
+ * <pre>
+ * 		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
+ * 			.defaultClause(word -> word.length())
+ * 			.addCase(word -> word.equals("BCD"), word -> word.length() + 10)
+ * 			.addCase(word -> word.equals("CDE"), word -> word.length() + 100)
+ * 			.build();
+ * 		
+ * 		//Use a supplier to pass a value to SwitchDriver
+ * 		underTest.apply(() -> "ABC").intValue();//returns 3
+ * 		
+ * 		//Or, use a direct value to SwitchDriver
+ * 		underTest.apply("ABC").intValue();//returns 3
+ * </pre>
  * 
  * @author wsadik
+ * @version 1.0.0
  *
- * @param <T>
+ * @param <T> Type parameter of the return type when the driver is used.
  */
 public class SwitchDriver<T, U> {
 	private final Function<T, U> defaultMapper;
 	private Map<Predicate<T>, Function<T, U>> caseFunctions;
 
-	public static <TS, US> Builder<TS, US> of() {
+	public static <TS, US> Builder<TS, US> builder() {
 		return new Builder<TS, US>();
 	}
 	

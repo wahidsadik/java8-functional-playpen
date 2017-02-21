@@ -16,7 +16,7 @@ public class SwitchDriverTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Not all parameters have been provided");
 
-		SwitchDriver.<String, Integer> of().build();
+		SwitchDriver.<String, Integer> builder().build();
 	}
 
 	@Test
@@ -24,12 +24,12 @@ public class SwitchDriverTest {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("defaultMapper has already been set");
 
-		SwitchDriver.<String, Integer> of().defaultClause(word -> word.length()).defaultClause(word -> word.length());
+		SwitchDriver.<String, Integer> builder().defaultClause(word -> word.length()).defaultClause(word -> word.length());
 	}
 
 	@Test
 	public void testBasics() {
-		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
 			.defaultClause(word -> word.length())
 			.addCase(word -> word.equals("BCD"), word -> word.length() + 10)
 			.addCase(word -> word.equals("CDE"), word -> word.length() + 100)
@@ -46,7 +46,7 @@ public class SwitchDriverTest {
 	public void throwsExceptionFromDefaultMapper() {
 		thrown.expect(RuntimeException.class);
 		
-		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
 			.defaultClause(word -> {
 				throw new RuntimeException();
 			})
@@ -59,7 +59,7 @@ public class SwitchDriverTest {
 	public void throwsExceptionFromCaseClausePredicate() {
 		thrown.expect(RuntimeException.class);
 		
-		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
 			.defaultClause(word -> word.length())
 			.addCase(word -> {
 				throw new RuntimeException();
@@ -73,7 +73,7 @@ public class SwitchDriverTest {
 	public void throwsExceptionFromCaseClauseMap() {
 		thrown.expect(RuntimeException.class);
 		
-		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
 			.defaultClause(word -> word.length())
 			.addCase(word -> word.equals("BCD"), word -> {
 				throw new RuntimeException();
@@ -87,7 +87,7 @@ public class SwitchDriverTest {
 	public void throwsExceptionFromApply() {
 		thrown.expect(RuntimeException.class);
 		
-		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
 			.defaultClause(word -> word.length())
 			.addCase(word -> word.equals("BCD"), word -> word.length() + 10)
 			.build();

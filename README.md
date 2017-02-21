@@ -14,7 +14,7 @@ Only one expression is allowed for each of those. There is no way to in-line mor
 
 So here is my attempt:
 
-	TernaryDriver<String> underTest = TernaryDriver.<String> of()
+	TernaryDriver<String> underTest = TernaryDriver.<String> builder()
 		.whenTrue(() -> {
 			// lots of code
 			return "Hello World!"
@@ -35,7 +35,7 @@ Functional way of creating `switch`.
 
 Example:
 
-		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> of()
+		SwitchDriver<String, Integer> underTest = SwitchDriver.<String, Integer> builder()
 			.defaultClause(word -> word.length())
 			.addCase(word -> word.equals("BCD"), word -> word.length() + 10)
 			.addCase(word -> word.equals("CDE"), word -> word.length() + 100)
