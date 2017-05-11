@@ -1,10 +1,8 @@
-# gradle
-.gradle
+.gradle/
+target/
 
-
-# Eclipse
-bin/
 .classpath
 .project
-.settings
+.settings/
+bin/
 build/
