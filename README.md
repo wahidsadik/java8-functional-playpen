@@ -1,6 +1,8 @@
 # java8-functional-playpen
 I experiment my Java 8 functional adventures here
 
+[![CircleCI](https://circleci.com/gh/wahidsadik/java8-functional-playpen/tree/master.svg?style=shield)](https://circleci.com/gh/wahidsadik/java8-functional-playpen/tree/master)
+
 ## TernaryDriver
 
 This is to scratch an itch I had. With Java, I can do this:
