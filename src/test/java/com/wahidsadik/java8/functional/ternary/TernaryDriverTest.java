@@ -15,7 +15,9 @@ public class TernaryDriverTest {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("trueSupplier has already been set");
 
-        TernaryDriver.<String>builder().whenTrue(() -> "ABC").whenTrue(() -> "ABC");
+        TernaryDriver.<String>builder()
+            .whenTrue(() -> "ABC")
+            .whenTrue(() -> "ABC");
     }
 
     @Test
@@ -23,7 +25,9 @@ public class TernaryDriverTest {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("falseSupplier has already been set");
 
-        TernaryDriver.<String>builder().whenFalse(() -> "ABC").whenFalse(() -> "ABC");
+        TernaryDriver.<String>builder()
+            .whenFalse(() -> "ABC")
+            .whenFalse(() -> "ABC");
     }
 
     @Test
@@ -31,7 +35,9 @@ public class TernaryDriverTest {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("Not all parameters have been provided");
 
-        TernaryDriver.<String>builder().whenFalse(() -> "ABC").build();
+        TernaryDriver.<String>builder()
+            .whenFalse(() -> "ABC")
+            .build();
     }
 
     @Test
@@ -39,15 +45,19 @@ public class TernaryDriverTest {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("Not all parameters have been provided");
 
-        TernaryDriver.<String>builder().whenTrue(() -> "ABC").build();
+        TernaryDriver.<String>builder()
+            .whenTrue(() -> "ABC")
+            .build();
     }
 
     @Test
     public void testTrue() {
         String value = "ABC";
 
-        TernaryDriver<String> underTest = TernaryDriver.<String>builder().whenTrue(() -> value).whenFalse(() -> "DEF")
-                .build();
+        TernaryDriver<String> underTest = TernaryDriver.<String>builder()
+            .whenTrue(() -> value)
+            .whenFalse(() -> "DEF")
+            .build();
 
         Assert.assertEquals(value, underTest.apply(() -> true));
     }
@@ -56,8 +66,10 @@ public class TernaryDriverTest {
     public void testFalse() {
         String value = "DEF";
 
-        TernaryDriver<String> underTest = TernaryDriver.<String>builder().whenTrue(() -> "ABC").whenFalse(() -> value)
-                .build();
+        TernaryDriver<String> underTest = TernaryDriver.<String>builder()
+            .whenTrue(() -> "ABC")
+            .whenFalse(() -> value)
+            .build();
 
         Assert.assertEquals(value, underTest.apply(() -> false));
     }
@@ -66,8 +78,10 @@ public class TernaryDriverTest {
     public void driverIsReusable() {
         String value = "DEF";
 
-        TernaryDriver<String> underTest = TernaryDriver.<String>builder().whenTrue(() -> "ABC").whenFalse(() -> value)
-                .build();
+        TernaryDriver<String> underTest = TernaryDriver.<String>builder()
+            .whenTrue(() -> "ABC")
+            .whenFalse(() -> value)
+            .build();
 
         Assert.assertEquals(value, underTest.apply(() -> false));
         Assert.assertEquals(value, underTest.apply(() -> false));
@@ -78,8 +92,10 @@ public class TernaryDriverTest {
 
         int[] value = { 4, 5 };
 
-        TernaryDriver<int[]> underTest = TernaryDriver.<int[]>builder().whenTrue(() -> new int[] { 1, 2, 3 })
-                .whenFalse(() -> new int[] { 4, 5 }).build();
+        TernaryDriver<int[]> underTest = TernaryDriver.<int[]>builder()
+            .whenTrue(() -> new int[] { 1, 2, 3 })
+            .whenFalse(() -> new int[] { 4, 5 })
+            .build();
 
         Assert.assertArrayEquals(value, underTest.apply(() -> false));
     }
@@ -88,9 +104,12 @@ public class TernaryDriverTest {
     public void throwsExceptionFromWhenClause() {
         thrown.expect(RuntimeException.class);
 
-        TernaryDriver<String> underTest = TernaryDriver.<String>builder().whenTrue(() -> "ABC").whenFalse(() -> {
-            throw new RuntimeException();
-        }).build();
+        TernaryDriver<String> underTest = TernaryDriver.<String>builder()
+            .whenTrue(() -> "ABC")
+            .whenFalse(() -> {
+                throw new RuntimeException();
+            })
+            .build();
 
         underTest.apply(() -> false);
     }
@@ -99,8 +118,10 @@ public class TernaryDriverTest {
     public void throwsExceptionFromApplyClause() {
         thrown.expect(RuntimeException.class);
 
-        TernaryDriver<String> underTest = TernaryDriver.<String>builder().whenTrue(() -> "ABC").whenFalse(() -> "DEF")
-                .build();
+        TernaryDriver<String> underTest = TernaryDriver.<String>builder()
+            .whenTrue(() -> "ABC")
+            .whenFalse(() -> "DEF")
+            .build();
 
         underTest.apply(() -> {
             throw new RuntimeException();
